@@ -26,25 +26,34 @@ namespace filechk
         }
 
         void control() {
-            Console.WriteLine("[0] Scan doubles\n[1] View doubles");
+            Console.WriteLine("[0] Scan one dir\n[1] Scan 2 dirs\n[2] View doubles");
             string ch = Console.ReadLine();
 
             if (ch == "0")
+            {
+                Console.Write("Directory to scan: ");
+                string dir1 = Console.ReadLine();
+            }
+            else if (ch == "1")
             {
                 Console.Write("Directory 1: ");
                 string dir1 = Console.ReadLine();
                 Console.Write("Directory 2: ");
                 string dir2 = Console.ReadLine();
                 getDiffereces(dir1, dir2);
-            }
-            else if (ch == "1") { 
-                
+
             }
         }
 
         rootData dira = new rootData();
         rootData dirb = new rootData();
 
+        void getDiffereces(string roota)
+        {
+            Console.WriteLine("Scanning dir 1");
+            listDirs(roota, dira);
+            Console.WriteLine("\nDone");
+        }
         void getDiffereces(string roota, string rootb) {
             Console.WriteLine("Scanning dir 1");
             listDirs(roota, dira);
@@ -52,8 +61,6 @@ namespace filechk
             Console.WriteLine("Scanning dir 2");
             listDirs(rootb, dirb);
             Console.WriteLine("\nDone");
-
-
         }
 
         List<DoubleFile> doubleFiles = new List<DoubleFile>(); 
