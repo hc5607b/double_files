@@ -1,0 +1,7 @@
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\bin\Debug\filechk.exe.config
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\bin\Debug\filechk.exe
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\bin\Debug\filechk.pdb
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\obj\Debug\filechk.csproj.AssemblyReference.cache
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\obj\Debug\filechk.csproj.CoreCompileInputs.cache
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\obj\Debug\filechk.exe
+C:\Users\hc560\Documents\Codes\HC\double_files\filechk\filechk\obj\Debug\filechk.pdb
