@@ -21,8 +21,9 @@ namespace filechk
     class app {
         public app() {
             //control();
-            getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f2", $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1");
-            //getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1");
+            //getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f2", $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1");
+            //getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1"); 
+            getDiffereces(@"F:\Images");
         }
 
         void control() {
@@ -57,10 +58,7 @@ namespace filechk
 
             getDoubles();
 
-            foreach (DoubleFile df in doubleFiles)
-            {
-                Console.WriteLine($"{df.File} {df.DoublePaths.Count}");
-            }
+            printDoubles();
         }
         void getDiffereces(string roota, string rootb) {
             Console.WriteLine("Scanning dir 1");
@@ -72,10 +70,17 @@ namespace filechk
             Console.WriteLine("\nDone");
 
             getDoubles(false);
+            printDoubles();
+        }
 
-            foreach (DoubleFile df in doubleFiles) {
-                Console.WriteLine($"{df.File} {df.DoublePaths.Count}");
+        void printDoubles()
+        {
+            foreach (DoubleFile df in doubleFiles)
+            {
+                Console.WriteLine($"----------------------------------------------------------------------------------------\n{df.File}\n");
+                foreach (string s in df.DoublePaths) { Console.WriteLine($"\t{s}"); }
             }
+            Console.WriteLine($"----------------------------------------------------------------------------------------");
         }
 
         List<DoubleFile> doubleFiles = new List<DoubleFile>(); 
