@@ -21,8 +21,8 @@ namespace filechk
     class app {
         public app() {
             //control();
-            getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1", 
-                $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f2");
+            getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f2", $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1");
+            //getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1");
         }
 
         void control() {
@@ -53,23 +53,62 @@ namespace filechk
             Console.WriteLine("Scanning dir 1");
             listDirs(roota, dira);
             Console.WriteLine("\nDone");
+            tempCount = 0;
+
+            getDoubles();
+
+            foreach (DoubleFile df in doubleFiles)
+            {
+                Console.WriteLine($"{df.File} {df.DoublePaths.Count}");
+            }
         }
         void getDiffereces(string roota, string rootb) {
             Console.WriteLine("Scanning dir 1");
             listDirs(roota, dira);
             Console.WriteLine("\nDone");
+            tempCount = 0;
             Console.WriteLine("Scanning dir 2");
             listDirs(rootb, dirb);
             Console.WriteLine("\nDone");
+
+            getDoubles(false);
+
+            foreach (DoubleFile df in doubleFiles) {
+                Console.WriteLine($"{df.File} {df.DoublePaths.Count}");
+            }
         }
 
         List<DoubleFile> doubleFiles = new List<DoubleFile>(); 
-        void getDoubles() {
+        void getDoubles(bool onefolder = true) {
             foreach (FileID f1 in dira.Files) {
-                foreach (FileID f2 in dirb.Files) {
-                    if (f1.Name == f2.Name && f1.Size == f2.Size) {  } // add double info !!!!!!!!!!!!!!!
+                DoubleFile df = new DoubleFile();
+                df.File = f1.Path;
+                if (onefolder)
+                {
+                    foreach (FileID f2 in dira.Files)
+                    {
+                        if (f1.Name == f2.Name && f1.Size == f2.Size && f1.Path != f2.Path && !isMarked(f2.Path)) { df.DoublePaths.Add(f2.Path); }
+                    }
+                }
+                else
+                {
+                    foreach (FileID f2 in dirb.Files)
+                    {
+                        if (f1.Name == f2.Name && f1.Size == f2.Size) { df.DoublePaths.Add(f2.Path); }
+                    }
+                }
+                if (df.DoublePaths.Count != 0) { doubleFiles.Add(df); }
+            }
+        }
+
+        bool isMarked(string path) {
+            foreach (DoubleFile df in doubleFiles) {
+                if (df.File == path) { return true; }
+                foreach (string s in df.DoublePaths) {
+                    if (s == path) { return true; }
                 }
             }
+            return false;
         }
 
         #region Get files
@@ -101,6 +140,7 @@ namespace filechk
     }
 
     public class DoubleFile {
-        List<string> DoublePaths = new List<string>();
+        public string File;
+        public List<string> DoublePaths = new List<string>();
     }
 }
