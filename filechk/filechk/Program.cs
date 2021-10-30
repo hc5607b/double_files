@@ -20,57 +20,68 @@ namespace filechk
 
     class app {
         public app() {
-            //control();
+            control();
             //getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f2", $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1");
             //getDiffereces($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/testfolders/f1"); 
-            getDiffereces(@"F:\Images");
+            //getDiffereces(@"F:\Images");
         }
 
         void control() {
-            Console.WriteLine("[0] Scan one dir\n[1] Scan 2 dirs\n[2] View doubles");
-            string ch = Console.ReadLine();
-
-            if (ch == "0")
+            while (true)
             {
-                Console.Write("Directory to scan: ");
-                string dir1 = Console.ReadLine();
-            }
-            else if (ch == "1")
-            {
-                Console.Write("Directory 1: ");
-                string dir1 = Console.ReadLine();
-                Console.Write("Directory 2: ");
-                string dir2 = Console.ReadLine();
-                getDiffereces(dir1, dir2);
+                Console.WriteLine("[0] Scan one dir\n[1] Scan 2 dirs\n[2] View doubles\n[3] View stats\n[4] Save results\n[5] Load results");
+                string ch = Console.ReadLine();
 
+                if (ch == "0")
+                {
+                    Console.Write("Directory to scan: ");
+                    string dir1 = Console.ReadLine();
+                    if (Directory.Exists(dir1)) { getDiffereces(dir1); }
+                }
+                else if (ch == "1")
+                {
+                    Console.Write("Directory 1: ");
+                    string dir1 = Console.ReadLine();
+                    Console.Write("Directory 2: ");
+                    string dir2 = Console.ReadLine();
+                    if (Directory.Exists(dir1) && Directory.Exists(dir2)) { getDiffereces(dir1, dir2); }
+                }
+                else if (ch == "2")
+                {
+                    if (doubleFiles.Count != 0)
+                    {
+                        printDoubles();
+                    }
+                }
+                else if (ch == "3")
+                {
+                    printStats();
+                }
+                else if (ch == "4")
+                {
+                    Console.Write("Dir to save (blank is default): ");
+                    saveRes(Console.ReadLine());
+                }
+                else if (ch == "5")
+                {
+                    loadRes();
+                }
             }
         }
 
-        rootData dira = new rootData();
-        rootData dirb = new rootData();
-
-        void getDiffereces(string roota)
-        {
-            Console.WriteLine("Scanning dir 1");
-            listDirs(roota, dira);
-            Console.WriteLine("\nDone");
-            tempCount = 0;
-
-            getDoubles();
-
-            printDoubles();
+        void saveRes(string dir = "") {
+            string path = AppDomain.CurrentDomain.BaseDirectory;
+            if (dir != "" && Directory.Exists(dir)) { path = dir; }
+            string fileName = $"scanresult_{DateTime.Now}";
         }
-        void getDiffereces(string roota, string rootb) {
-            Console.WriteLine("Scanning dir 1");
-            listDirs(roota, dira);
-            Console.WriteLine("\nDone");
-            tempCount = 0;
-            Console.WriteLine("Scanning dir 2");
-            listDirs(rootb, dirb);
-            Console.WriteLine("\nDone");
+        void loadRes() { 
+            
+        }
 
-            getDoubles(false);
-            printDoubles();
+        void printStats() {
+            string dirSacnTemp = dirsScanned[0];
+            if (dirsScanned[1] != null) { dirSacnTemp += $", {dirsScanned[1]}"; }
+            Console.WriteLine($"Dir(s) scanned: {dirSacnTemp}\nFiles scanned: {tempCount}\nDoubles: {doubleFiles.Count}\nScan time: {scanTime}");
         }
 
         void printDoubles()
@@ -81,6 +92,53 @@ namespace filechk
                 foreach (string s in df.DoublePaths) { Console.WriteLine($"\t{s}"); }
             }
             Console.WriteLine($"----------------------------------------------------------------------------------------");
+            Console.WriteLine($"{doubleFiles.Count} doubles found");
+        }
+
+        TimeSpan scanTime = new TimeSpan();
+        rootData dira = new rootData();
+        rootData dirb = new rootData();
+        string[] dirsScanned = new string[2];
+
+        void initScan()
+        {
+            tempCount = 0;
+            scanTime = new TimeSpan();
+            dira = new rootData();
+            dirb = new rootData();
+            doubleFiles.Clear();
+            dirsScanned = new string[2];
+        }
+
+        void getDiffereces(string roota)
+        {
+            initScan();
+            dirsScanned[0] = roota;
+            Stopwatch sw = Stopwatch.StartNew();
+            Console.WriteLine("Scanning dir 1");
+            listDirs(roota, dira);
+            Console.WriteLine("\nDone");
+
+            getDoubles();
+            sw.Stop();
+            scanTime = sw.Elapsed;
+        }
+        void getDiffereces(string roota, string rootb)
+        {
+            initScan();
+            dirsScanned[0] = roota;
+            dirsScanned[1] = rootb;
+            Stopwatch sw = Stopwatch.StartNew();
+            Console.WriteLine("Scanning dir 1");
+            listDirs(roota, dira);
+            Console.WriteLine("\nDone");
+            Console.WriteLine("Scanning dir 2");
+            listDirs(rootb, dirb);
+            Console.WriteLine("\nDone");
+
+            getDoubles(false);
+            sw.Stop();
+            scanTime = sw.Elapsed;
         }
 
         List<DoubleFile> doubleFiles = new List<DoubleFile>(); 
